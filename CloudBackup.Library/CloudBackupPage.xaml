@@ -10,6 +10,7 @@
 
     <StackPanel>
         <TextBlock Text="Cloud Backup" />
+        <Button Content="Choose" Click="OnFloderChoose" />
         <Button Command="{Binding AutoBackupCommand}" >Auto Backup</Button>
     </StackPanel>
 </Page>

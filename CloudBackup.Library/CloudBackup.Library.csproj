@@ -120,10 +120,11 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CloudBackupPage.cs" />
+    <Compile Include="CloudBackupPage.xaml.cs" />
     <Compile Include="CloudBackupPageViewModel.cs" />
     <Compile Include="OneDriveApiConnect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\StreamExtensions.cs" />
     <EmbeddedResource Include="Properties\CloudBackup.Library.rd.xml" />
   </ItemGroup>
   <ItemGroup>

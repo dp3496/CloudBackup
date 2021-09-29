@@ -1,16 +1,19 @@
-﻿using System;
+﻿using CloudBackup.Library.Util;
+using Microsoft.OneDrive.Sdk;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.Storage;
 
 namespace CloudBackup.Library
 {
     public class CloudBackupPageViewModel
     {
+        private readonly OneDriveApiConnect _oneDriveApiConnect;
+
         public CloudBackupPageViewModel()
         {
+            _oneDriveApiConnect = new OneDriveApiConnect();
             AutoBackupCommand = new CommandViewModel(obj => true, Execute);
         }
         public IList<string> BackupOptions { get; set; } = new List<string>
@@ -21,33 +24,19 @@ namespace CloudBackup.Library
 
         public ICommand AutoBackupCommand { get; set; }
 
-        private void Execute(object parameter)
+        private async void Execute(object parameter)
         {
-
-        }
-    }
-
-    public class CommandViewModel : ICommand
-    {
-        private readonly Predicate<object> canExecute;
-        private readonly Action<object> execute;
-
-        public event EventHandler CanExecuteChanged;
-
-        public CommandViewModel(Predicate<object> canExecute, Action<object> execute)
-        {
-            this.canExecute = canExecute;
-            this.execute = execute;
+            await _oneDriveApiConnect.GetDriveClient();
         }
 
-        public bool CanExecute(object parameter)
+        public async void UploadToOneDrive(StorageFile storageFile)
         {
-            return canExecute(parameter);
-        }
-
-        public void Execute(object parameter)
-        {
-            execute(parameter);
+            var randomAccessStream = await storageFile.OpenReadAsync();
+            using (var stream = await randomAccessStream.ConvertToStream())
+            {
+                var client = await _oneDriveApiConnect.GetDriveClient();
+                await client.Drive.Root.ItemWithPath(storageFile.Name).Content.Request().PutAsync<Item>(stream);
+            }
         }
     }
 }
